@@ -1,12 +1,11 @@
 """
 within database "fforum", there are 3 tables:
-    "users" that handles values (id, userid, username, createdate, hashedpassword)
-    "threads" that handles values (id, tableid, userid, title, createdate)
-    "posts" that handles values (id, postid, threadid, userid, content, createdate)
+    "users" that handles values (id, username, hpassword, createdate)
+    "threads" that handles values (id, userid, title, createdate)
+    "posts" that handles values (id, threadid, userid, content, createdate)
 """
 
-import zlib
-from flask import Flask, render_template
+from flask import Flask, render_template, session
 import mysql.connector
 
 app = Flask(__name__)
@@ -18,12 +17,49 @@ mydatabase = mysql.connector.connect(
    database="fforum"
 )
 
-mycursor = mydatabase.cursor()
+def hfunction(password):
+   hpassword = f"h{password}h"
+   return hpassword
 
+session["page"] = 1,
+session["postpage"] = 1
 
-zlib.crc32(bytes(input_password, "utf-8")) 
+@app.route("/")
+def index():
+   if "username" in session:
+      with mydatabase.cursor() as cursor:
+        cursor.execute(f"SELECT * FROM threads ORDER BY createdate DESC LIMIT 50 OFFSET {session['page']*50}")
+        threads = cursor.fetchall()
+        return render_template("index.html", username=session["username"], threads=threads)
+   else:
+      return render_template("login.html")
 
+@app.route("/login", methods=["GET","POST"])
+def login():
+   username = request.form.get("username")
+   password = request.form.get("password")
 
+   session["username"] = username
+
+   with mydatabase.cursor() as cursor:
+      cursor.execute("SELECT EXISTS(SELECT 1 FROM users WHERE username = %s AND hpassword = %s);", (username, hfunction(password)))
+      user_exists = cursor.fetchone()
+
+      if user_exists[0] == 1:
+         with mydatabase.cursor() as cursor:
+            cursor.execute(f"SELECT * FROM threads ORDER BY createdate DESC LIMIT 50 OFFSET {session['page']*50}")
+            threads = cursor.fetchall()
+            return render_template("index.html", username=session["username"], threads=threads)
+      else:
+         with mydatabase.cursor() as cursor:
+            cursor.execute("INSERT INTO users (username, hpassword) VALUES (%s, %s)",(username, hfunction(password)))
+            mydatabase.commit()
+            
+            cursor.execute(f"SELECT * FROM threads ORDER BY createdate DESC LIMIT 50 OFFSET {session['page']*50}")
+            threads = cursor.fetchall()
+            return render_template("index.html", username=session["username"], threads=threads)
+
+   
 
 
 
