@@ -59,22 +59,34 @@ def login():
 @app.route("/user")
 def user():
    if "username" not in session:
-         return render_template("login.html")
+      return render_template("login.html")
 
    with mydatabase.cursor() as cursor:
       cursor.execute("SELECT * FROM users WHERE username = %s AND hpassword = %s", (session["username"], hfunction(session["password"])))
-      user = cursor.fetchall()
+      user = cursor.fetchone()
 
-   with mydatabase.cursor() as cursor:
-         cursor.execute("SELECT * FROM posts WHERE userid = %s", (user[0]))
-         posts = cursor.fetchall()
+      cursor.execute("SELECT * FROM posts WHERE userid = %s", (user[0]))
+      posts = cursor.fetchall()
    
    return render_template("user.html", user=user, posts=posts)
 
 
 @app.route("/thread")
 def thread():
-   pass
+   if "username" not in session:
+      return render_template("login.html")
+   
+   threadid = request.args.get('id')
+   
+   with mydatabase.cursor() as cursor:
+      cursor.execute("SELECT * FROM posts WHERE threadid = %s", (threadid))
+      posts = cursor.fetchall()
+
+      cursor.execute("SELECT * FROM threads WHERE id = %s LIMIT 1", (threadid))
+      thread = cursor.fetchone()
+
+
+   return render_template("thread.html", thread=thread, posts=posts)
 
 
 if __name__ == "__main__":
