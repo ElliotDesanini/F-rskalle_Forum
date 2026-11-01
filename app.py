@@ -21,46 +21,60 @@ def hfunction(password):
    hpassword = f"h{password}h"
    return hpassword
 
-session["page"] = 1,
-session["postpage"] = 1
+session["page"] = 1
 
 @app.route("/")
 def index():
-   if "username" in session:
-      with mydatabase.cursor() as cursor:
-        cursor.execute(f"SELECT * FROM threads ORDER BY createdate DESC LIMIT 50 OFFSET {session['page']*50}")
-        threads = cursor.fetchall()
-        return render_template("index.html", username=session["username"], threads=threads)
-   else:
-      return render_template("login.html")
+   if "username" not in session:
+            return render_template("login.html")
+   
+   with mydatabase.cursor() as cursor:
+     cursor.execute(f"SELECT * FROM threads ORDER BY createdate DESC LIMIT 50 OFFSET {session['page']*50}")
+     threads = cursor.fetchall()
+
+   return render_template("index.html", username=session["username"], threads=threads)
 
 @app.route("/login", methods=["GET","POST"])
 def login():
-   username = request.form.get("username")
-   password = request.form.get("password")
 
-   session["username"] = username
+   session["username"] = request.form.get("username")
+   session["password"] = request.form.get("password")
 
    with mydatabase.cursor() as cursor:
-      cursor.execute("SELECT EXISTS(SELECT 1 FROM users WHERE username = %s AND hpassword = %s);", (username, hfunction(password)))
+      cursor.execute("SELECT EXISTS(SELECT 1 FROM users WHERE username = %s AND hpassword = %s);", (session["username"], hfunction(session["password"])))
       user_exists = cursor.fetchone()
 
-      if user_exists[0] == 1:
-         with mydatabase.cursor() as cursor:
-            cursor.execute(f"SELECT * FROM threads ORDER BY createdate DESC LIMIT 50 OFFSET {session['page']*50}")
-            threads = cursor.fetchall()
-            return render_template("index.html", username=session["username"], threads=threads)
-      else:
-         with mydatabase.cursor() as cursor:
-            cursor.execute("INSERT INTO users (username, hpassword) VALUES (%s, %s)",(username, hfunction(password)))
-            mydatabase.commit()
-            
-            cursor.execute(f"SELECT * FROM threads ORDER BY createdate DESC LIMIT 50 OFFSET {session['page']*50}")
-            threads = cursor.fetchall()
-            return render_template("index.html", username=session["username"], threads=threads)
+   if user_exists[0] != 1:
+      with mydatabase.cursor() as cursor:
+         cursor.execute("INSERT INTO users (username, hpassword) VALUES (%s, %s)",(session["username"], hfunction(session["password"])))
+         mydatabase.commit()
+         
+   with mydatabase.cursor() as cursor:
+      cursor.execute(f"SELECT * FROM threads ORDER BY createdate DESC LIMIT 50 OFFSET {session['page']*50}")
+      threads = cursor.fetchall()
+
+   return render_template("index.html", username=session["username"], threads=threads)
 
    
+@app.route("/user")
+def user():
+   if "username" not in session:
+         return render_template("login.html")
 
+   with mydatabase.cursor() as cursor:
+      cursor.execute("SELECT * FROM users WHERE username = %s AND hpassword = %s", (session["username"], hfunction(session["password"])))
+      user = cursor.fetchall()
+
+   with mydatabase.cursor() as cursor:
+         cursor.execute("SELECT * FROM posts WHERE userid = %s", (user[0]))
+         posts = cursor.fetchall()
+   
+   return render_template("user.html", user=user, posts=posts)
+
+
+@app.route("/thread")
+def thread():
+   pass
 
 
 if __name__ == "__main__":
