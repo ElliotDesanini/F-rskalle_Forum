@@ -10,8 +10,20 @@
         <nav>
             <ul>
                 <li><a href=" {{ url_for('index.html') }} "></a></li>
+                <li><a href=" {{ url_for('user.html') }} "></a></li>
             </ul>
         </nav>
     </header>
+
+    {% block content %}
+    {% endblock %}
+
+    <footer>
+        <ul>
+            <li>Elliot D</li>
+            <li>TE24A</li>
+            <li>Åva gymnasium</li>
+        </ul>
+    </footer>
 </body>
 </html>

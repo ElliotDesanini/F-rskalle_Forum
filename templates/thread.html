@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<main>
+    <div id="thread">
+        <h1>{{ thread.title }}</h1>
+        <small><p>{{thread.user}} - {{ thread.createdate }}</p></small>
+        <hr>
+        <p>{{ thread.content }}</p>
+    </div>
+    <div id="posts">
+        <ul>
+            {%for post in posts%}
+
+            {% endfor %}
+        </ul>
+    </div>
+</main>
+
+{% endblock %}

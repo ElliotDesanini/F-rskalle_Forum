@@ -1,7 +1,7 @@
 """
 within database "fforum", there are 3 tables:
     "users" that handles values (id, username, hpassword, createdate)
-    "threads" that handles values (id, userid, title, createdate)
+    "threads" that handles values (id, userid, title, content, createdate)
     "posts" that handles values (id, threadid, userid, content, createdate)
 """
 
@@ -21,7 +21,12 @@ def hfunction(password):
    hpassword = f"h{password}h"
    return hpassword
 
-session["page"] = 1
+def reset_session():
+   session.clear()
+
+   session["page"] = 1
+
+reset_session()
 
 @app.route("/")
 def index():
@@ -36,6 +41,7 @@ def index():
 
 @app.route("/login", methods=["GET","POST"])
 def login():
+   reset_session()
 
    session["username"] = request.form.get("username")
    session["password"] = request.form.get("password")
@@ -50,8 +56,8 @@ def login():
          mydatabase.commit()
          
    with mydatabase.cursor() as cursor:
-      cursor.execute(f"SELECT * FROM threads ORDER BY createdate DESC LIMIT 50 OFFSET {session['page']*50}")
-      threads = cursor.fetchall()
+      cursor.execute(f"SELECT threads.title, users.username, threads.createdate FROM threads INNER JOIN users ON users.id = threads.userid ORDER BY threads.createdate DESC LIMIT 50 OFFSET {session['page']*50}")
+      threads = {"title": cursor.fetchall()[0], "user": cursor.fetchall()[1], "createdate": cursor.fetchall()[2]}
 
    return render_template("index.html", username=session["username"], threads=threads)
 
@@ -79,11 +85,12 @@ def thread():
    threadid = request.args.get('id')
    
    with mydatabase.cursor() as cursor:
-      cursor.execute("SELECT * FROM posts WHERE threadid = %s", (threadid))
-      posts = cursor.fetchall()
+      cursor.execute("SELECT users.username, posts.content, posts.createdate FROM posts, users ON users.id = posts.userid WHERE posts.threadid = %s", (threadid))
+      posts = {"user": cursor.fetchall()[0], "content": cursor.fetchall()[1], "createdate": cursor.fetchall()[2]}
 
-      cursor.execute("SELECT * FROM threads WHERE id = %s LIMIT 1", (threadid))
-      thread = cursor.fetchone()
+      
+      cursor.execute(f"SELECT threads.title, threads.content, users.username, threads.createdate ")
+      thread = {"title": cursor.fetchall()[0], "content": cursor.fetchall()[1], "user": cursor.fetchall()[2], "createdate": cursor.fetchall()[3]}
 
 
    return render_template("thread.html", thread=thread, posts=posts)
@@ -91,39 +98,3 @@ def thread():
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-import mysql.connector  # installera med "pip install mysql-connector-python" i kommandotolken
-mydb = mysql.connector.connect(
-  host="localhost",
-  user="root",  # standardanvändarnamn för XAMPP
-  password="",  # dito lösenord (en tom sträng)
-  database="webbserverprogrammering"  # byt namn om din databas heter något annat
-)
-mycursor = mydb.cursor()
-print("Uppkopplad till databasen!")
-
-# Skriva till databasen
-sql = "INSERT INTO students (fornamn, efternamn, klass) VALUES (%s, %s, %s)"
-val = ("Graham", "Chapman", "TE24A")
-mycursor.execute(sql, val)
-mydb.commit()
-print(mycursor.rowcount, "record inserted.")
-
-# Läsa från databasen
-mycursor.execute("SELECT * FROM students")
-myresult = mycursor.fetchall()
-for x in myresult:
-  print(x)
