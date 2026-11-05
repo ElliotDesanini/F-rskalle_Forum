@@ -9,13 +9,15 @@
     <header>
         <nav>
             <ul>
-                <li><a href=" {{ url_for('index.html') }} "></a></li>
-                <li><a href=" {{ url_for('user.html') }} "></a></li>
+                <li><a href=" {{ url_for('index') }} "></a></li>
+                <li><a href=" {{ url_for('user') }} "></a></li>
             </ul>
         </nav>
+        {{ username }}
     </header>
 
     {% block content %}
+
     {% endblock %}
 
     <footer>

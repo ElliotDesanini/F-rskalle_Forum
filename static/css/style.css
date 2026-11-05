@@ -1,0 +1,6 @@
+#thread_preview {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 250px; /* Requires a fixed width or max-width */
+}

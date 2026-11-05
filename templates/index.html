@@ -1,11 +1,28 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>fårskalle forum</title>
-</head>
-<body>
-    
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Create a thread</h2>
+<div>
+<form action="/add_thread" method="post">
+<input type="text" name="title">
+<input type="text" name="content">
+<input type="submit" value="Post Thread">
+</form>
+</div>
+
+<hr>
+<h2>Threads</h2>
+
+{% for thread in threads %}
+<h3><a href="{{ url_for('thread', id=thread[3]) }}">{{ thread[0] }}</a></h3>
+<small>{{ thread[2] }}</small>    
+<p id="thread_preview">{{ thread[1] }}</p>
+{% endfor %}
+
+<div id="pageflip">
+<button><</button>
+<p>{{ pagenumber }}</p>
+<button>></button>
+</div>
+
+{% endblock content %}
