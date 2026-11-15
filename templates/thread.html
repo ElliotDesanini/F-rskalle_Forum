@@ -4,15 +4,19 @@
 
 <main>
     <div id="thread">
-        <h1>{{ thread.title }}</h1>
-        <small><p>{{thread.user}} - {{ thread.createdate }}</p></small>
+        <h1>{{ thread[0] }}</h1>
+        <small><p>{{thread[2]}} - {{ thread[3] }}</p></small>
         <hr>
-        <p>{{ thread.content }}</p>
+        <p>{{ thread[1] }}</p>
     </div>
     <div id="posts">
         <ul>
             {%for post in posts%}
-
+            <hr>
+            <h3>{{ post[0] }}</h3>
+            <small>{{ post[2] }}</small>
+            <p>{{ post[1]}} </p>
+            <hr>
             {% endfor %}
         </ul>
     </div>
