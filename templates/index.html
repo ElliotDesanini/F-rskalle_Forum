@@ -1,28 +1,48 @@
 {% extends "base.html" %}
 
 {% block content %}
+
+<main>
+
+<h1>{{ username }}!</h1>
+
 <h2>Create a thread</h2>
+
 <div>
-<form action="/add_thread" method="post">
-<input type="text" name="title">
-<input type="text" name="content">
-<input type="submit" value="Post Thread">
-</form>
+    <form action="/add_thread" method="POST">
+        <input type="text" name="title" placeholder="Thread title" required>
+        <textarea name="content" placeholder="Write your thread..." required></textarea>
+        <input type="submit" value="Post Thread">
+    </form>
 </div>
 
 <hr>
+
 <h2>Threads</h2>
 
 {% for thread in threads %}
-<h3><a href="{{ url_for('thread', id=thread[3]) }}">{{ thread[0] }}</a></h3>
-<small>{{ thread[2] }}</small>    
-<p id="thread_preview">{{ thread[1] }}</p>
+    <h3><a href="{{ url_for('thread', id=thread[3]) }}">{{ thread[0] }}</a></h3>
+    <small>{{ thread[1] }} - {{ thread[2] }}</small>
+
+{% else %}
+    <p>no threads</p>
 {% endfor %}
 
+<hr>
+
 <div id="pageflip">
-<button><</button>
-<p>{{ pagenumber }}</p>
-<button>></button>
+    {% if pagenumber > 0 %}
+        <a href="{{ url_for('page', pagenumber=pagenumber-1) }}">←</a>
+    {% endif %}
+
+    <p>Page {{ pagenumber + 1 }}</p>
+
+    {% if threads|length == 50 %}
+        <a href="{{ url_for('page', pagenumber=pagenumber+1) }}">→</a>
+    {% endif %}
+
 </div>
+
+</main>
 
 {% endblock content %}

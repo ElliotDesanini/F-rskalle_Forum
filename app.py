@@ -10,10 +10,11 @@ from flask import Flask, render_template, session, request, redirect
 from werkzeug.security import generate_password_hash, check_password_hash
 import secrets
 import mysql.connector
+import os
 
 app = Flask(__name__)
 
-app.secret_key = secrets.token_hex(32)
+app.secret_key = os.environ.get("SECRET_KEY")
 
 mydatabase = mysql.connector.connect(
    host="localhost",
