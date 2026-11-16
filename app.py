@@ -36,11 +36,11 @@ def index():
 
    with mydatabase.cursor() as cursor:
       cursor.execute("""
-         SELECT threads.title, users.username, threads.createdate, threads.id
-         FROM threads
-         INNER JOIN users ON users.id = threads.userid
-         ORDER BY threads.createdate DESC
-         LIMIT 50 OFFSET %s
+        SELECT threads.title, users.username, threads.createdate, threads.id
+        FROM threads
+        INNER JOIN users ON users.id = threads.userid
+        ORDER BY threads.createdate DESC
+        LIMIT 50 OFFSET %s
       """, (page * 50,))
 
       threads = cursor.fetchall()
@@ -60,38 +60,40 @@ def login():
       return "Username and password are required.", 400
    
    with mydatabase.cursor() as cursor:
-      cursor.execute("SELECT id, username, hpassword FROM users WHERE username = %s", (username,))
+    cursor.execute("SELECT id, username, hpassword FROM users WHERE username = %s", (username,))
 
-      user = cursor.fetchone()
+    user = cursor.fetchone()
 
    if user is None or not check_password_hash(user[2], password):
       return "Incorrect username or password.", 401
    
    reset_session()
+
    session["userid"] = user[0]
    session["username"] = user[1]
+
    return redirect("/")
 
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
    if request.method == "GET":
-       return render_template("register.html")
+      return render_template("register.html")
    
    username = request.form.get("username")
    password = request.form.get("password")
 
    if not username or not password:
-       return "Username and password are required.", 400
+      return "Username and password are required.", 400
    
    hpassword = generate_password_hash(password)
 
    try:
        with mydatabase.cursor() as cursor:
-           cursor.execute(
-               "INSERT INTO users (username, hpassword) VALUES (%s, %s)", (username, hpassword))
-           mydatabase.commit()
-           userid = cursor.lastrowid
+        cursor.execute(
+            "INSERT INTO users (username, hpassword) VALUES (%s, %s)", (username, hpassword))
+        mydatabase.commit()
+        userid = cursor.lastrowid
 
    except mysql.connector.IntegrityError:
       mydatabase.rollback()
@@ -133,7 +135,10 @@ def user():
       
    return render_template("user.html", user=user, posts=posts)
 
+parmida 
 
+
+ 
 @app.route("/thread")
 def thread():
     if "userid" not in session:
