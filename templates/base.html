@@ -1,31 +1,41 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>fårskalle forum</title>
+    <title>Fårskalle forum</title>
 </head>
+
 <body>
-    <header>
-        <nav>
-            <ul>
-                <li><a href=" {{ url_for('index') }} "></a></li>
-                <li><a href=" {{ url_for('user') }} "></a></li>
-            </ul>
-        </nav>
-        {{ username }}
-    </header>
 
-    {% block content %}
+<nav>
+    <div><a href="/">Forum</a></div>
 
-    {% endblock %}
+    <div>
+        {% if session.get("userid") %}
+            <a href="/user">user</a>
 
-    <footer>
-        <ul>
-            <li>Elliot D</li>
-            <li>TE24A</li>
-            <li>Åva gymnasium</li>
-        </ul>
-    </footer>
+            <form action="/logout" method="POST">
+                <button type="submit">Logout</button>
+            </form>
+        {% else %}
+            <a href="/login">login</a>
+            <a href="/register">register</a>
+        {% endif %}
+    </div>
+</nav>
+
+{% block content %}
+{% endblock content %}
+
+<footer>
+<ul>
+    <li>Elliot D</li>
+    <li>TE24A</li>
+    <li>Åva gymnasium</li>
+ </ul>
+</footer>
+
 </body>
 </html>

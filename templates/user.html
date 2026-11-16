@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<main>
+
+<div id="profile">
+    <h1>{{ user[1] }}</h1>
+
+    <p><strong>userid:</strong> {{ user[0] }}</p>
+    <p><strong>create date:</strong> {{ user[2] }}</p>
+</div>
+
+<hr>
+
+<section id="user-threads">
+    <h2>Threads</h2>
+
+    {% for thread in threads %}
+
+    <div class="thread">
+        <h3><a href="{{ url_for('thread', id=thread[0]) }}">{{ thread[1] }}</a></h3>
+        <p>{{ thread[2] }}</p>
+        <small>Created: {{ thread[3] }}</small>
+    </div>
+
+    <hr>
+    {% else %}
+    <p>no threads</p>
+    {% endfor %}
+
+</section>
+
+<hr>
+
+<section id="user-posts">
+    <h2>Posts</h2>
+
+    {% for post in posts %}
+
+    <div class="post">
+        <h3><a href="{{ url_for('thread', id=post[1]) }}">{{ post[4] }}</a></h3>
+        <p>{{ post[2] }}</p>
+        <small>Posted: {{ post[3] }}</small>
+    </div>
+    <hr>
+
+    {% else %}
+    <p>You haven't written any posts yet.</p>
+    {% endfor %}
+
+</section>
+
+
+</main>
+
+{% endblock content %}
