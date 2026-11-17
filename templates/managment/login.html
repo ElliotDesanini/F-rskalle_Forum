@@ -2,26 +2,22 @@
 
 {% block content %}
 
-<main>
-<h1>Register</h1>
+<main id="loginpage">
+<h1>login</h1>
 
-<form action="/register" method="POST">
+<form action="/login" method="POST">
     <div>
         <label for="username">Username</label>
         <input type="text" id="username" name="username" required>
     </div>
-
     <div>
         <label for="password">Password</label>
         <input type="password" id="password" name="password" required>
     </div>
-
-    <button type="submit">Register</button>
+    <input type="submit" value="Login">
 </form>
 
-<p><a href="/login">Login</a>.</p>
-
-
+<p><a href="/register">Register</a></p>
 </main>
 
-{% endblock %}
+{% endblock content %}

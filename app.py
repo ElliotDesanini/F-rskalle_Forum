@@ -2,7 +2,7 @@
 within database "fforum", there are 3 tables:
 	"users" that handles values (id, username, hpassword, createdate)
 	"threads" that handles values (id, userid, title, content, createdate)
-	"posts" that handles values (id, threadid, userid, content, createdate)
+	"posts" that handles values (id, threadid, postid, userid, content, createdate)
 """
 
 
@@ -30,7 +30,7 @@ def reset_session():
 @app.route("/")
 def index():
 	if "userid" not in session:
-		return render_template("login.html")
+		return render_template("managment/login.html")
 
 	page = session.get("page", 0)
 
@@ -45,7 +45,7 @@ def index():
 
 		threads = cursor.fetchall()
 
-	return render_template( "index.html", username=session["username"], threads=threads, pagenumber=page)
+	return render_template( "content/index.html", username=session["username"], threads=threads, pagenumber=page)
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -78,7 +78,7 @@ def login():
 @app.route("/register", methods=["GET", "POST"])
 def register():
 	if request.method == "GET":
-		return render_template("register.html")
+		return render_template("managment/register.html")
    
 	username = request.form.get("username")
 	password = request.form.get("password")
@@ -134,12 +134,7 @@ def user():
 
 		posts = cursor.fetchall()
 
-	return render_template(
-		"user.html",
-		user=user,
-		threads=threads,
-		posts=posts
-	)
+	return render_template("content/user.html", user=user, threads=threads, posts=posts)
 
  
 @app.route("/thread")
@@ -166,12 +161,7 @@ def thread():
 
 		posts = cursor.fetchall()
 
-	return render_template(
-		"thread.html",
-		username=session["username"],
-		thread=thread,
-		posts=posts
-	)
+	return render_template( "content/thread.html", username=session["username"], thread=thread, posts=posts)
 
 
 @app.route("/add_thread", methods=["POST"])
@@ -207,20 +197,14 @@ def add_post():
 		return "Thread ID and content are required.", 400
 
 	with mydatabase.cursor() as cursor:
-		cursor.execute(
-			"SELECT id FROM threads WHERE id = %s",
-			(threadid,)
-		)
+		cursor.execute("SELECT id FROM threads WHERE id = %s",(threadid,))
 
 		thread = cursor.fetchone()
 
 		if thread is None:
 			abort(404)
 
-		cursor.execute(
-			"INSERT INTO posts (threadid, userid, content) VALUES (%s, %s, %s)",
-			(threadid, session["userid"], content)
-		)
+		cursor.execute("INSERT INTO posts (threadid, userid, content) VALUES (%s, %s, %s)", (threadid, session["userid"], content))
 		mydatabase.commit()
 
 	return redirect(f"/thread?id={threadid}")
@@ -240,7 +224,23 @@ def page(pagenumber):
 
 @app.errorhandler(404)
 def page_not_found(e):
-    return render_template("404.html"), 404
+    return render_template("error/404.html"), 404
+
+@app.errorhandler(500)
+def server_error(e):
+    return render_template("error/500.html"), 500
+
+@app.errorhandler(503)
+def server_down(e):
+    return render_template("error/503.html"), 503
+
+@app.errorhandler(403)
+def forbidden(e):
+    return render_template("error/403.html"), 403
+
+@app.errorhandler(401)
+def unauthorized(e):
+    return render_template("error/401.html"), 401
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5002, debug=True)

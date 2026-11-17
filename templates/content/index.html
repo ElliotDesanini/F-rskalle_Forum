@@ -2,9 +2,7 @@
 
 {% block content %}
 
-<main>
-
-<h1>{{ username }}</h1>
+<main id="indexpage">
 
 <h2>Create a thread</h2>
 
@@ -32,13 +30,13 @@
 
 <div id="pageflip">
     {% if pagenumber > 0 %}
-        <a href="{{ url_for('page', pagenumber=pagenumber-1) }}">←</a>
+        <a href="{{ url_for('content/index.html', pagenumber=pagenumber-1) }}">←</a>
     {% endif %}
 
-    <p>Page {{ pagenumber + 1 }}</p>
+    <p>page {{ pagenumber + 1 }} / {{ (threads|length // 50) + 1 }}</p>
 
-    {% if threads|length == 50 %}
-        <a href="{{ url_for('page', pagenumber=pagenumber+1) }}">→</a>
+    {% if threads|length > 50 %}
+        <a href="{{ url_for('content/index.html', pagenumber=pagenumber+1) }}">→</a>
     {% endif %}
 
 </div>
