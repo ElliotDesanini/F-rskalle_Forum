@@ -4,11 +4,12 @@
 
 <main class="errorpage">
     <div>
-        <h1>UNAUTHORIZED</h1>
-        <small>401</small>
-        <p>you cannot access this page without an account.</p>
+        <h1>{{ errorname }}</h1>
+        <small>{{ errorcode }}</small>
+        <p>{{ error_description }}</p>
         <a href="/login">login</a>
         <a href="/login">register</a>
+        <a href="/">go back to forum</a>
     </div>
 </main>
 

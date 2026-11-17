@@ -17,7 +17,6 @@
     <div>
         {% if session.get("userid") %}
             <a href="/user">{{ username }}</a>
-            <a href="{{ url_for('thread_create') }}">make thread</a>
             <form action="/logout" method="POST">
                 <button type="submit">logout</button>
             </form>

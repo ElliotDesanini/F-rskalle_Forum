@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<main id="indexpage">
+    <div id="filters">
+        <p>pass</p>
+    </div>
+    <div id="topics">
+        {% for topic in topics %}
+        <div class="topic_preview">
+            <h3><a href="{{ url_for('topic', id=topic[3]) }}">{{ topic[0] }}</a></h3>
+            <small>{{ topic[1] }} - {{ topic[2] }}</small>
+            <p>{{ topic[4] }}</p>
+        </div>
+        {% else %}
+            <p>no topics</p>
+        {% endfor %}
+    </div>
+    <div id="options">
+        <div><a href="{{ url_for('topic_create') }}">make topic</a></div>
+    </div>
+</main>
+
+
+<footer>
+    <hr>
+    <div id="pageflip">
+    {% if pagenumber > 0 %}
+        <a href="{{ url_for('content/index.html', pagenumber=pagenumber-1) }}">←</a>
+    {% endif %}
+
+    <p>page {{ pagenumber + 1 }} / {{ (topics|length // 50) + 1 }}</p>
+
+    {% if topics|length > 50 %}
+    <a href="{{ url_for('content/index.html', pagenumber=pagenumber+1) }}">→</a>
+    {% endif %}
+</div>
+</footer>
+
+
+{% endblock content %}

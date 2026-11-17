@@ -117,6 +117,7 @@ nav img {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  gap: 1rem;
 }
 
 #loginpage > form  {
@@ -131,31 +132,145 @@ nav img {
   width: 100%;
 }
 
+
+
 input[type="submit"] {
   color: var(--theme-color);
   border: 1px solid var(--theme-color);
 }
 
-#indexpage #threads {
+
+#topicpage {
+  display: grid;
+  grid-template-columns: 1fr 4fr 1fr;
+  grid-template-areas: 
+  "filters threads options"
+  "filters threads options";
+}
+
+#topicpage #threads {
+  grid-area: "threads";
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 }
 
-#indexpage .thread_preview {
+#topicpage #options {
+  grid-area: "options";
   display: flex;
   flex-direction: column;
-  width: 75%;
+  align-items: center;
+}
+
+#topicpage #filters {
+  grid-area: "filters";
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#topicpage #options > div {
+  display: flex;
+  justify-content: center;
+}
+
+#topicpage #options a {
+  border-radius: 5px;
+  padding: 0.2rem;
+  background-color: var(--surface-color);
+  border: 1px solid var(--theme-color);
+  color: var(--theme-color);
+}
+
+
+#topicpage .thread_preview {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
   border: 1px solid var(--muted-color);
   border-radius: 6px;
   margin: 8px;
   gap: 0.2rem;
 }
 
-#indexpage .thread_preview h3, #indexpage .thread_preview small {
+#topicpage .thread_preview h3, #topicpage .thread_preview small {
   text-align: center;
 }
+
+
+
+
+
+
+
+#indexpage {
+  display: grid;
+  grid-template-columns: 1fr 4fr 1fr;
+  grid-template-areas: 
+  "filters threads options"
+  "filters threads options";
+}
+
+#indexpage #topics {
+  grid-area: "threads";
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#indexpage #options {
+  grid-area: "options";
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#indexpage #filters {
+  grid-area: "filters";
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#indexpage #options > div {
+  display: flex;
+  justify-content: center;
+}
+
+#indexpage #options a {
+  border-radius: 5px;
+  padding: 0.2rem;
+  background-color: var(--surface-color);
+  border: 1px solid var(--theme-color);
+  color: var(--theme-color);
+}
+
+
+#indexpage .topics_preview {
+  display: flex;
+  width: 100%;
+  border: 1px solid var(--muted-color);
+  border-radius: 6px;
+  margin: 8px;
+  gap: 0.2rem;
+}
+
+#indexpage .topics_preview h3, #indexpage .topics_preview small {
+  text-align: center;
+}
+
+
+
+
+
+
+
+
+
+
+
 
 .errorpage {
   display: flex;
@@ -175,3 +290,5 @@ input[type="submit"] {
   padding: 10px;
   border-radius: 20px;
 }
+
+
