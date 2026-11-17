@@ -16,10 +16,6 @@ mydatabase = mysql.connector.connect(
 )
 
 
-# ----------------------------------------
-# SESSION HANDLING
-# ----------------------------------------
-
 def reset_session():
 	session.clear()
 
@@ -42,9 +38,6 @@ def logged_in():
 	return True
 
 
-# ----------------------------------------
-# HOMEPAGE
-# ----------------------------------------
 
 @app.route("/")
 def index():
@@ -67,17 +60,18 @@ def index():
 
 		topics = cursor.fetchall()
 
+		cursor.execute("SELECT COUNT(*) FROM topics")
+
+		total_topics = cursor.fetchone()[0]
+
 	return render_template(
 		"content/index.html",
 		username=session["username"],
 		topics=topics,
+		total_topics= total_topics,
 		pagenumber=page
 	)
 
-
-# ----------------------------------------
-# TOPIC PAGE
-# ----------------------------------------
 
 @app.route("/topic")
 def topic():
@@ -112,18 +106,12 @@ def topic():
 
 		threads = cursor.fetchall()
 
-	return render_template(
-		"content/topic.html",
-		username=session["username"],
-		threads=threads,
-		pagenumber=page,
-		topicid=topicid
-	)
+		cursor.execute("SELECT COUNT(*) FROM threads WHERE topicid = %s",(topicid,))
 
+		total_threads = cursor.fetchone()[0]
 
-# ----------------------------------------
-# LOGIN
-# ----------------------------------------
+	return render_template("content/topic.html", username=session["username"], total_threads= total_threads, threads=threads, pagenumber=page, topicid=topicid)
+
 
 @app.route("/managment/login", methods=["GET", "POST"])
 def login():
@@ -146,7 +134,7 @@ def login():
 		user = cursor.fetchone()
 
 	if user is None or not check_password_hash(user[2], password):
-		return "Incorrect username or password.", 401
+		abort(401)
 
 	reset_session()
 
@@ -155,10 +143,6 @@ def login():
 
 	return redirect("/")
 
-
-# ----------------------------------------
-# REGISTER
-# ----------------------------------------
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -198,10 +182,6 @@ def register():
 	return redirect("/")
 
 
-# ----------------------------------------
-# LOGOUT
-# ----------------------------------------
-
 @app.route("/logout", methods=["POST"])
 def logout():
 
@@ -210,9 +190,6 @@ def logout():
 	return redirect("/managment/login")
 
 
-# ----------------------------------------
-# USER PROFILE
-# ----------------------------------------
 
 @app.route("/user")
 def user():
@@ -247,10 +224,6 @@ def user():
 		posts=posts
 	)
 
-
-# ----------------------------------------
-# THREAD PAGE
-# ----------------------------------------
 
 @app.route("/thread")
 def thread():
@@ -295,10 +268,6 @@ def thread():
 	)
 
 
-# ----------------------------------------
-# CREATE THREAD PAGE
-# ----------------------------------------
-
 @app.route("/thread_create")
 def thread_create():
 
@@ -321,7 +290,15 @@ def thread_create():
 	if topic is None:
 		abort(404)
 
-	return render_template( "content/thread_create.html", topic=topic, topicid=topicid)
+	return render_template( "create/thread_create.html", topic=topic, topicid=topicid)
+
+@app.route("/topic_create")
+def topic_create():
+
+	if not logged_in():
+		return redirect("/managment/login")
+
+	return render_template( "create/topic_create.html")
 
 @app.route("/add_thread", methods=["POST"])
 def add_thread():

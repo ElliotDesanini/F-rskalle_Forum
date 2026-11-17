@@ -25,16 +25,18 @@
 
 <footer>
     <hr>
-    <div id="pageflip">
-    {% if pagenumber > 0 %}
-        <a href="{{ url_for('content/index.html', pagenumber=pagenumber-1) }}">←</a>
+<div id="pageflip">
+
+    {% if pagenumber > 1 %}
+        <a href="{{ url_for('index', page=pagenumber-1) }}">←</a>
     {% endif %}
 
-    <p>page {{ pagenumber + 1 }} / {{ (topics|length // 50) + 1 }}</p>
+    <p>Page {{ pagenumber }} / {{ ((total_topics - 1) // 50) + 1 }}</p>
 
-    {% if topics|length > 50 %}
-    <a href="{{ url_for('content/index.html', pagenumber=pagenumber+1) }}">→</a>
+    {% if pagenumber * 50 < total_topics %}
+        <a href="{{ url_for('index', page=pagenumber+1) }}">→</a>
     {% endif %}
+
 </div>
 </footer>
 

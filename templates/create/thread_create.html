@@ -5,8 +5,9 @@
 <div>
     <form action="/add_thread" method="POST">
         <input type="text" name="title" placeholder="Thread title" required>
-        <textarea name="content" placeholder="Write your thread..." required></textarea>
-        <input type="submit" value="Post Thread">
+        <textarea name="content" placeholder="write your thread..." required></textarea>
+        <input type="hidden" name="topicid" value="{{ topicid }}">
+        <input type="submit" value="create thread">
     </form>
 </div>
 

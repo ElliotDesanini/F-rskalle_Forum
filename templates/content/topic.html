@@ -18,7 +18,7 @@
         {% endfor %}
     </div>
     <div id="options">
-        <div><a href="{{ url_for('thread_create') }}">make thread</a></div>
+        <div><a href="{{ url_for('thread_create', id=topicid) }}">make thread</a></div>
     </div>
 </main>
 
@@ -26,16 +26,16 @@
 <footer>
     <hr>
     <div id="pageflip">
-    {% if pagenumber > 0 %}
-        <a href="{{ url_for('content/index.html', pagenumber=pagenumber-1) }}">←</a>
-    {% endif %}
+        {% if pagenumber gt 1 %}
+            <a href="{{ url_for('topic', id=topicid, page=pagenumber-1) }}">←</a>
+        {% endif %}
 
-    <p>page {{ pagenumber + 1 }} / {{ (threads|length // 50) + 1 }}</p>
+        <p>Page {{ pagenumber }} / {{ ((total_threads - 1) // 50) + 1 }}</p>
 
-    {% if threads|length > 50 %}
-    <a href="{{ url_for('content/index.html', pagenumber=pagenumber+1) }}">→</a>
-    {% endif %}
-</div>
+        {% if pagenumber * 50 lt total_threads %}
+            <a href="{{ url_for('topic', id=topicid, page=pagenumber+1) }}">→</a>
+        {% endif %}
+    </div>
 </footer>
 
 
