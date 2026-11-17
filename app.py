@@ -6,7 +6,7 @@ within database "fforum", there are 3 tables:
 """
 
 
-from flask import Flask, render_template, session, request, redirect
+from flask import Flask, render_template, session, request, redirect, abort
 from werkzeug.security import generate_password_hash, check_password_hash
 import secrets
 import mysql.connector
@@ -158,7 +158,7 @@ def thread():
 		thread = cursor.fetchone()
 
 		if thread is None:
-			return "Thread not found.", 404
+			abort(404)
 
 		cursor.execute("""SELECT users.username, posts.content, posts.createdate, posts.id
 			FROM posts INNER JOIN users ON users.id = posts.userid
@@ -215,7 +215,7 @@ def add_post():
 		thread = cursor.fetchone()
 
 		if thread is None:
-			return "Thread not found.", 404
+			abort(404)
 
 		cursor.execute(
 			"INSERT INTO posts (threadid, userid, content) VALUES (%s, %s, %s)",
@@ -238,6 +238,9 @@ def page(pagenumber):
 
 	return redirect("/")
 
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template("404.html"), 404
 
 if __name__ == "__main__":
-	app.run(debug=True, port=5000)
+    app.run(host="0.0.0.0", port=5002, debug=True)

@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <title>Fårskalle forum</title>
 </head>
 
@@ -14,10 +15,10 @@
 
     <div>
         {% if session.get("userid") %}
-            <a href="/user">user</a>
+            <a href="/user">{{ username }}</a>
 
             <form action="/logout" method="POST">
-                <button type="submit">Logout</button>
+                <button type="submit">logout</button>
             </form>
         {% else %}
             <a href="/login">login</a>
@@ -28,14 +29,6 @@
 
 {% block content %}
 {% endblock content %}
-
-<footer>
-<ul>
-    <li>Elliot D</li>
-    <li>TE24A</li>
-    <li>Åva gymnasium</li>
- </ul>
-</footer>
 
 </body>
 </html>
