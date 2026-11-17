@@ -4,27 +4,17 @@
 
 <main id="indexpage">
 
-<h2>Create a thread</h2>
-
-<div>
-    <form action="/add_thread" method="POST">
-        <input type="text" name="title" placeholder="Thread title" required>
-        <textarea name="content" placeholder="Write your thread..." required></textarea>
-        <input type="submit" value="Post Thread">
-    </form>
-</div>
-
-<hr>
-
-<h2>Threads</h2>
-
-{% for thread in threads %}
-    <h3><a href="{{ url_for('thread', id=thread[3]) }}">{{ thread[0] }}</a></h3>
-    <small>{{ thread[1] }} - {{ thread[2] }}</small>
-
-{% else %}
+<div id="threads">
+    {% for thread in threads %}
+    <div class="thread_preview">
+        <h3><a href="{{ url_for('thread', id=thread[3]) }}">{{ thread[0] }}</a></h3>
+        <small>{{ thread[1] }} - {{ thread[2] }}</small>
+        <p>{{ thread[4] }}</p>
+    </div>
+    {% else %}
     <p>no threads</p>
-{% endfor %}
+    {% endfor %}
+</div>
 
 <hr>
 

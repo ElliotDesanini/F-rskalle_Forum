@@ -30,13 +30,13 @@ def reset_session():
 @app.route("/")
 def index():
 	if "userid" not in session:
-		return render_template("managment/login.html")
+		return redirect("managment/login")
 
 	page = session.get("page", 0)
 
 	with mydatabase.cursor() as cursor:
 		cursor.execute("""
-		SELECT threads.title, users.username, threads.createdate, threads.id
+		SELECT threads.title, users.username, threads.createdate, threads.id, threads.content
 		FROM threads
 		INNER JOIN users ON users.id = threads.userid
 		ORDER BY threads.createdate DESC
@@ -48,10 +48,10 @@ def index():
 	return render_template( "content/index.html", username=session["username"], threads=threads, pagenumber=page)
 
 
-@app.route("/login", methods=["GET", "POST"])
+@app.route("/managment/login", methods=["GET", "POST"])
 def login():
 	if request.method == "GET":
-		return render_template("login.html")
+		return render_template("managment/login.html")
 
 	username = request.form.get("username")
 	password = request.form.get("password")
@@ -107,15 +107,14 @@ def register():
 @app.route("/logout", methods=["POST"])
 def logout():
    reset_session()
-   return redirect("/login")
+   return redirect("/managment/login")
 
 
-@app.route("/user")
 
 @app.route("/user")
 def user():
 	if "userid" not in session:
-		return redirect("/login")
+		return redirect("/managment/login")
 
 	with mydatabase.cursor() as cursor:
 		cursor.execute("SELECT id, username, createdate FROM users WHERE id = %s", (session["userid"],))
@@ -124,7 +123,7 @@ def user():
 
 		if user is None:
 			reset_session()
-			return redirect("/login")
+			return redirect("/managment/login")
 		
 		cursor.execute("SELECT id, title, content, createdate FROM threads WHERE userid = %s ORDER BY createdate DESC", (session["userid"],))
 
@@ -140,7 +139,7 @@ def user():
 @app.route("/thread")
 def thread():
 	if "userid" not in session:
-		return redirect("/login")
+		return redirect("/managment/login")
 
 	threadid = request.args.get("id", type=int)
 
@@ -164,10 +163,17 @@ def thread():
 	return render_template( "content/thread.html", username=session["username"], thread=thread, posts=posts)
 
 
+@app.route("/thread_create", methods=["GET"])
+def thread_create():
+	if "userid" not in session:
+		return redirect("/managment/login")
+
+	return render_template("content/thread_create.html")
+
 @app.route("/add_thread", methods=["POST"])
 def add_thread():
 	if "userid" not in session:
-		return redirect("/login")
+		return redirect("/managment/login")
 
 	title = request.form.get("title")
 	content = request.form.get("content")
@@ -188,7 +194,7 @@ def add_thread():
 @app.route("/add_post", methods=["POST"])
 def add_post():
 	if "userid" not in session:
-		return redirect("/login")
+		return redirect("/managment/login")
 
 	threadid = request.form.get("threadid", type=int)
 	content = request.form.get("content")
@@ -213,7 +219,7 @@ def add_post():
 @app.route("/page/<int:pagenumber>")
 def page(pagenumber):
 	if "userid" not in session:
-		return redirect("/login")
+		return redirect("/managment/login")
 
 	if pagenumber < 0:
 		return redirect("/")
