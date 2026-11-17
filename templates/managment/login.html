@@ -5,13 +5,13 @@
 <main id="loginpage">
 <h1>login</h1>
 
-<form action="{{ url_for('login') }}" method="POST">
+<form action="{{ url_for('login') }}" method="POST" autocomplete="off">
     <input type="text" id="username" name="username" placeholder="username" required>
     <input type="password" id="password" name="password" placeholder="password" required>
     <input type="submit" value="login" id="submit">
 </form>
 
-<p><a href="/managment/register.html">register</a></p>
+<p><a href="{{ url_for('register') }}">register</a></p>
 </main>
 
 {% endblock content %}

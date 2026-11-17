@@ -2,24 +2,16 @@
 
 {% block content %}
 
-<main id="registerpages">
+<main id="registerpage">
 <h1>register</h1>
 
-<form action="/register" method="POST">
-    <div>
-        <label for="username">username</label>
-        <input type="text" id="username" name="username" required>
-    </div>
-
-    <div>
-        <label for="password">password</label>
-        <input type="password" id="password" name="password" required>
-    </div>
-
+<form action="/register" method="POST" autocomplete="off">
+    <input type="text" id="username" name="username" placeholder="username" required>
+    <input type="password" id="password" name="password" placeholder="password" required>
     <button type="submit">register</button>
 </form>
 
-<p><a href="/managment/login">login</a></p>
+<p><a href="{{ url_for('login') }}">login</a></p>
 
 
 </main>

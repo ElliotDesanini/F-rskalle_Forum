@@ -2,13 +2,13 @@
 
 {% block content %}
 
-<div>
+<main class="createpage">
     <form action="/add_thread" method="POST">
-        <input type="text" name="title" placeholder="Thread title" required>
+        <input type="text" name="title" placeholder="thread title" required>
         <textarea name="content" placeholder="write your thread..." required></textarea>
         <input type="hidden" name="topicid" value="{{ topicid }}">
         <input type="submit" value="create thread">
     </form>
-</div>
+</main>
 
 {% endblock %}

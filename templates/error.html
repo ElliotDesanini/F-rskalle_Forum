@@ -7,8 +7,8 @@
         <h1>{{ errorname }}</h1>
         <small>{{ errorcode }}</small>
         <p>{{ error_description }}</p>
-        <a href="/managment/login">login</a>
-        <a href="/managment/register">register</a>
+        <a href="{{ url_for('login') }}">login</a>
+        <a href="{{ url_for('register') }}">register</a>
         <a href="/">go back to forum</a>
     </div>
 </main>

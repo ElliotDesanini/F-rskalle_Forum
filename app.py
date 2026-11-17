@@ -65,7 +65,7 @@ def index():
 		total_topics = cursor.fetchone()[0]
 
 	return render_template(
-		"content/index.html",
+		"index.html",
 		username=session["username"],
 		topics=topics,
 		total_topics= total_topics,
@@ -290,7 +290,7 @@ def thread_create():
 	if topic is None:
 		abort(404)
 
-	return render_template( "create/thread_create.html", topic=topic, topicid=topicid)
+	return render_template( "create/thread_create.html", topic=topic, topicid=topicid, username = session["username"])
 
 @app.route("/topic_create")
 def topic_create():
@@ -298,7 +298,7 @@ def topic_create():
 	if not logged_in():
 		return redirect("/managment/login")
 
-	return render_template( "create/topic_create.html")
+	return render_template( "create/topic_create.html", username=session["username"])
 
 @app.route("/add_thread", methods=["POST"])
 def add_thread():

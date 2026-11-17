@@ -11,7 +11,12 @@
 
 * {
   box-sizing: border-box;
-  border: 1px solid red;
+}
+
+hr {
+  border: none;
+  height: 2px;
+  background-color: var(--surface-color);
 }
 
 body {
@@ -22,6 +27,11 @@ body {
   font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
   font-size: var(--font-size);
   line-height: var(--line-height);
+}
+
+main {
+  padding: 6px;
+  width: 100%;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -133,6 +143,25 @@ nav img {
 }
 
 
+#registerpage {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+#registerpage > form  {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+#registerpage > form > #submit {
+  width: 100%;
+}
 
 input[type="submit"] {
   color: var(--theme-color);
@@ -189,6 +218,7 @@ input[type="submit"] {
   flex-direction: column;
   width: 100%;
   border: 1px solid var(--muted-color);
+  align-items: center;
   border-radius: 6px;
   margin: 8px;
   gap: 0.2rem;
@@ -198,22 +228,16 @@ input[type="submit"] {
   text-align: center;
 }
 
-
-
-
-
-
-
 #indexpage {
   display: grid;
   grid-template-columns: 1fr 4fr 1fr;
   grid-template-areas: 
-  "filters threads options"
-  "filters threads options";
+  "tfilters topics toptions"
+  "tfilters topics toptions";
 }
 
 #indexpage #topics {
-  grid-area: "threads";
+  grid-area: "topics";
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -221,14 +245,14 @@ input[type="submit"] {
 }
 
 #indexpage #options {
-  grid-area: "options";
+  grid-area: "toptions";
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
 #indexpage #filters {
-  grid-area: "filters";
+  grid-area: "tfilters";
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -248,11 +272,13 @@ input[type="submit"] {
 }
 
 
-#indexpage .topics_preview {
+#indexpage .topic_preview {
   display: flex;
   width: 100%;
+  flex-direction: column;
   border: 1px solid var(--muted-color);
   border-radius: 6px;
+  align-items: center;
   margin: 8px;
   gap: 0.2rem;
 }
@@ -260,16 +286,6 @@ input[type="submit"] {
 #indexpage .topics_preview h3, #indexpage .topics_preview small {
   text-align: center;
 }
-
-
-
-
-
-
-
-
-
-
 
 
 .errorpage {
@@ -291,4 +307,23 @@ input[type="submit"] {
   border-radius: 20px;
 }
 
+.createpage {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
 
+.createpage form {
+  display: flex;
+  width: 80%;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+.createpage form input, .createpage form textarea {
+  width: 100%;
+}

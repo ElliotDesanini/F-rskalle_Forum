@@ -26,13 +26,13 @@
 <footer>
     <hr>
     <div id="pageflip">
-        {% if pagenumber gt 1 %}
+        {% if pagenumber > 1 %}
             <a href="{{ url_for('topic', id=topicid, page=pagenumber-1) }}">←</a>
         {% endif %}
 
         <p>Page {{ pagenumber }} / {{ ((total_threads - 1) // 50) + 1 }}</p>
 
-        {% if pagenumber * 50 lt total_threads %}
+        {% if pagenumber * 50 < total_threads %}
             <a href="{{ url_for('topic', id=topicid, page=pagenumber+1) }}">→</a>
         {% endif %}
     </div>
