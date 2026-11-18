@@ -232,6 +232,7 @@ def thread():
 		return redirect("/managment/login")
 
 	threadid = request.args.get("id", type=int)
+	replyid = request.args.get("replyid", type=int)
 
 	if threadid is None or threadid < 1:
 		abort(400)
@@ -252,7 +253,7 @@ def thread():
 
 		cursor.execute("""
 			SELECT users.username, posts.content,
-			posts.createdate, posts.id FROM posts
+			posts.createdate, posts.id, posts.replyid FROM posts
 			INNER JOIN users ON users.id = posts.userid
 			WHERE posts.threadid = %s
 			ORDER BY posts.createdate ASC
@@ -260,10 +261,19 @@ def thread():
 
 		posts = cursor.fetchall()
 
+		cursor.execute("""
+		SELECT posts.id, users.username FROM posts
+		INNER JOIN users ON posts.userid = users.id
+		WHERE posts.id = %s
+		""", (replyid,))
+
+		replypost = cursor.fetchone()
+
 	return render_template(
 		"content/thread.html",
 		username=session["username"],
 		thread=thread,
+		replypost=replypost,
 		posts=posts
 	)
 
@@ -364,6 +374,7 @@ def add_post():
 		return redirect("/managment/login")
 
 	threadid = request.form.get("threadid", type=int)
+	replyid = request.form.get("replyid", type=int)
 	content = request.form.get("content")
 
 	if threadid is None or threadid < 1 or not content:
@@ -377,7 +388,10 @@ def add_post():
 			if cursor.fetchone() is None:
 				abort(404)
 
-			cursor.execute("INSERT INTO posts (threadid, userid, content) VALUES (%s, %s, %s)", ( threadid, session["userid"], content ))
+			if replyid != None:
+				cursor.execute("INSERT INTO posts (threadid, postid, userid, content) VALUES (%s, %s, %s, %s)", ( threadid, replyid, session["userid"], content ))
+			else:
+				cursor.execute("INSERT INTO posts (threadid, userid, content) VALUES (%s, %s, %s)", ( threadid, session["userid"], content ))
 
 		mydatabase.commit()
 

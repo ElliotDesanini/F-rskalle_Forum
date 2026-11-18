@@ -9,25 +9,34 @@
 <p>{{ thread[1] }}</p>
 </div>
 
-<div id="posts">
-    {% for post in posts %}
-        <hr>
+{% macro show_posts(parent_id, indent_level) %}
+    {% for post in posts if post[4] == parent_id %}
+        {{ if indent_level = 0 }}
+            <hr>
+        {{ else }}
+            {{ "→ " * indent_level }}
         <h4>{{ post[0] }}</h4>
         <small>{{ post[2] }}</small>
         <p>{{ post[1] }}</p>
-    {% else %}
-    <hr>
-        <p>No posts</p>
-    <hr>
+
+        <div class="post_actions">
+            <a href="{{ url_for('thread', id=thread[4], replyid=post[3]) }}" class="reply">↪ reply</a>
+        </div>
+
+        {{ show_posts(post[3]) }}
     {% endfor %}
+{% endmacro %}
+
+<div id="posts">
+    {{ show_posts(None, 0) }}
 </div>
 
 <div id="add-post">
+    <small>reply to: {{ replypost[1] }}</small>
     <form action="/add_post" method="POST">
         <input type="hidden" name="threadid" value="{{ thread[4] }}">
-
+        <input type="hidden" name="replyid" value="{{ replypost[0] }}">
         <input type="text" name="content" placeholder="write a post..." required>
-
         <button type="submit">Submit post</button>
     </form>
 </div>
