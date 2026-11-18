@@ -253,7 +253,7 @@ def thread():
 
 		cursor.execute("""
 			SELECT users.username, posts.content,
-			posts.createdate, posts.id, posts.replyid FROM posts
+			posts.createdate, posts.id, posts.postid FROM posts
 			INNER JOIN users ON users.id = posts.userid
 			WHERE posts.threadid = %s
 			ORDER BY posts.createdate ASC

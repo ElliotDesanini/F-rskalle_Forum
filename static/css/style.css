@@ -11,12 +11,17 @@
 
 * {
   box-sizing: border-box;
+  border: 1px solid red;
 }
 
 hr {
   border: none;
   height: 2px;
   background-color: var(--surface-color);
+}
+
+p {
+  overflow-wrap: break-word;
 }
 
 body {

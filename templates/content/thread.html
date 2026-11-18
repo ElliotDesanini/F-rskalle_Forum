@@ -11,11 +11,11 @@
 
 {% macro show_posts(parent_id, indent_level) %}
     {% for post in posts if post[4] == parent_id %}
-        {{ if indent_level = 0 }}
-            <hr>
-        {{ else }}
-            {{ "→ " * indent_level }}
-        <h4>{{ post[0] }}</h4>
+    {% if indent_level == 0 %}
+        <hr>
+    {% endif %}
+
+        <h4>{{ "→ " * indent_level }}{{ post[0] }}</h4>
         <small>{{ post[2] }}</small>
         <p>{{ post[1] }}</p>
 
@@ -23,13 +23,9 @@
             <a href="{{ url_for('thread', id=thread[4], replyid=post[3]) }}" class="reply">↪ reply</a>
         </div>
 
-        {{ show_posts(post[3]) }}
+        {{ show_posts(post[3], indent_level+1) }}
     {% endfor %}
 {% endmacro %}
-
-<div id="posts">
-    {{ show_posts(None, 0) }}
-</div>
 
 <div id="add-post">
     <small>reply to: {{ replypost[1] }}</small>
@@ -39,6 +35,10 @@
         <input type="text" name="content" placeholder="write a post..." required>
         <button type="submit">Submit post</button>
     </form>
+</div>
+
+<div id="posts">
+    {{ show_posts(None, 0) }}
 </div>
 
 
